@@ -1,0 +1,7 @@
+Create the Role Enum
+
+Roles determine what a user is allowed to do.
+
+Role	Permissions
+CUSTOMER	View accounts, transfer money
+ADMIN	Manage customers, view all accounts
