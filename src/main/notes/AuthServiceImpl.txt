@@ -1,0 +1,69 @@
+AuthServiceImpl
+
+@Service
+
+Marks this class as a Spring Service.
+
+Spring automatically creates one object of this class and allows other classes to inject it.
+
+
+@RequiredArgsConstructor
+
+Lombok automatically creates a constructor for every final variable.
+
+Instead of writing constructors ourselves.
+
+
+AuthenticationManager
+
+Spring Security component responsible for checking username and password.
+
+PasswordEncoder
+
+Encrypts passwords before saving them into the database.
+
+Never save plain text passwords.
+
+
+JwtService
+
+Generates and validates JWT tokens.
+
+
+customerRepository.existsByEmail()
+
+Checks whether the email already exists.
+
+Returns true or false.
+
+
+customerRepository.save()
+
+Inserts a new customer into MySQL.
+
+
+passwordEncoder.encode()
+
+Hashes the password using BCrypt.
+
+
+authenticationManager.authenticate()
+
+Checks that the supplied email and password are correct.
+
+Throws an exception if authentication fails.
+
+
+UsernamePasswordAuthenticationToken
+
+Object used by Spring Security to carry login credentials.
+
+
+jwtService.generateToken()
+
+Creates a JWT token for the authenticated customer.
+
+
+AuthResponse
+
+Object returned to Postman or Swagger after successful authentication.

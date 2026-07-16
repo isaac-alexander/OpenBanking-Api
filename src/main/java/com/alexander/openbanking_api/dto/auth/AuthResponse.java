@@ -1,4 +1,4 @@
-package com.alexander.openbanking_api.dto;
+package com.alexander.openbanking_api.dto.auth;
 
 import lombok.*;
 

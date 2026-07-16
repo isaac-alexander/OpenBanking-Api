@@ -1,0 +1,52 @@
+UpdateCustomerRequest
+
+Used when a customer updates their profile.
+
+RegisterCustomerRequest contains password. Customers should not change passwords using the profile endpoint.
+
+Password changes usually have their own endpoint.
+
+@Getter
+Creates getters.
+
+@Setter
+Creates setters.
+
+@NoArgsConstructor
+Creates an empty constructor.
+
+@AllArgsConstructor
+Creates a constructor with every field.
+
+@Builder
+Allows object creation using the Builder pattern.
+
+@NotBlank
+Rejects null or empty values.
+
+@Email
+Validates email format.
+
+This DTO is used when a customer wants to update their profile.
+
+Fields
+
+firstName
+Customer's first name.
+
+lastName
+Customer's last name.
+
+phoneNumber
+Customer's phone number.
+
+address
+Customer's residential address.
+
+@NotBlank
+
+Ensures the field is not null or empty.
+
+This class is only used by
+
+PATCH /api/customers

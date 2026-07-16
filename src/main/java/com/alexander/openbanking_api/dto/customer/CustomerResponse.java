@@ -1,9 +1,8 @@
-package com.alexander.openbanking_api.dto;
+package com.alexander.openbanking_api.dto.customer;
 
 import com.alexander.openbanking_api.entity.Role;
 import lombok.*;
 
-// response returned after customer operations
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,8 +19,14 @@ public class CustomerResponse {
     // last name
     private String lastName;
 
-    // email address
+    // email
     private String email;
+
+    // phone number
+    private String phoneNumber;
+
+    // address
+    private String address;
 
     // customer role
     private Role role;

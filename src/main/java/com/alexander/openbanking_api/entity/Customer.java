@@ -46,8 +46,19 @@ public class Customer implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
+    // customer's phone number
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    // customer's address
+    @Column(nullable = false)
+    private String address;
+
     // date and time the customer registered
     private LocalDateTime createdAt;
+
+    // last update date
+    private LocalDateTime updatedAt;
 
     // Spring Security Methods
 

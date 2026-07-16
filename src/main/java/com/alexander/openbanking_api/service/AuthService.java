@@ -1,8 +1,8 @@
 package com.alexander.openbanking_api.service;
 
-import com.alexander.openbanking_api.dto.AuthResponse;
-import com.alexander.openbanking_api.dto.LoginRequest;
-import com.alexander.openbanking_api.dto.RegisterCustomerRequest;
+import com.alexander.openbanking_api.dto.auth.AuthResponse;
+import com.alexander.openbanking_api.dto.auth.LoginRequest;
+import com.alexander.openbanking_api.dto.auth.RegisterCustomerRequest;
 
 public interface AuthService {
 

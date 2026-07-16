@@ -1,10 +1,9 @@
-package com.alexander.openbanking_api.dto;
+package com.alexander.openbanking_api.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-// request body for customer registration
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +23,14 @@ public class RegisterCustomerRequest {
     @Email(message = "Invalid email address")
     @NotBlank(message = "Email is required")
     private String email;
+
+    // customer's phone number
+    @NotBlank(message = "Phone number is required")
+    private String phoneNumber;
+
+    // customer's address
+    @NotBlank(message = "Address is required")
+    private String address;
 
     // customer's password
     @NotBlank(message = "Password is required")

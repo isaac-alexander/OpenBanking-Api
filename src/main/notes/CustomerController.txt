@@ -1,0 +1,35 @@
+CustomerController
+
+Purpose
+
+Exposes Customer REST endpoints.
+
+@RestController
+
+Marks this class as a REST API.
+
+@RequestMapping("/api/customers")
+
+Every endpoint starts with
+
+/api/customers
+
+GET /me
+
+Returns the currently authenticated customer.
+
+GET /{id}
+
+Returns one customer.
+
+GET /
+
+Returns all customers.
+
+PATCH /
+
+Updates the currently logged-in customer.
+
+DELETE /{id}
+
+Deletes one customer.

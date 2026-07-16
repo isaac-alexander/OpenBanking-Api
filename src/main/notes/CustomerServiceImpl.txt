@@ -1,0 +1,49 @@
+CustomerServiceImpl
+
+Purpose
+
+Contains the business logic for the Customer module.
+
+@Service
+Marks this class as a Spring Service.
+
+@RequiredArgsConstructor
+Automatically injects CustomerRepository and CustomerMapper.
+
+getCurrentCustomer()
+
+Obtains the logged-in user's email from Spring Security.
+
+Searches the database.
+
+Returns CustomerResponse.
+
+getCustomerById()
+
+Returns one customer using the primary key.
+
+getAllCustomers()
+
+Returns all customers.
+
+Uses Stream API to convert Customer entities into CustomerResponse DTOs.
+
+updateCurrentCustomer()
+
+Finds the authenticated customer.
+
+Updates editable fields.
+
+Updates updatedAt.
+
+Saves the changes.
+
+Returns the updated customer.
+
+deleteCustomer()
+
+Finds customer by id.
+
+Deletes the customer.
+
+Throws RuntimeException if customer does not exist.
