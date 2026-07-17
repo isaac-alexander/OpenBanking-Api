@@ -3,18 +3,17 @@ package com.alexander.openbanking_api.service;
 import com.alexander.openbanking_api.dto.customer.CustomerResponse;
 import com.alexander.openbanking_api.dto.customer.UpdateCustomerRequest;
 
-import java.util.List;
-
 public interface CustomerService {
 
-    CustomerResponse getCurrentCustomer();
-
+    // get customer by id
     CustomerResponse getCustomerById(Long id);
 
-    List<CustomerResponse> getAllCustomers();
+    // update customer by id
+    CustomerResponse updateCustomer(
+            Long id,
+            UpdateCustomerRequest request);
 
-    CustomerResponse updateCurrentCustomer(UpdateCustomerRequest request);
-
+    // delete customer by id
     void deleteCustomer(Long id);
 
 }

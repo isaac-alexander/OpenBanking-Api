@@ -7,12 +7,12 @@ import com.alexander.openbanking_api.mapper.CustomerMapper;
 import com.alexander.openbanking_api.repository.CustomerRepository;
 import com.alexander.openbanking_api.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,73 +24,67 @@ public class CustomerServiceImpl implements CustomerService {
     // mapper
     private final CustomerMapper customerMapper;
 
-    // returns the currently logged-in customer
-    @Override
-    public CustomerResponse getCurrentCustomer() {
-
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        String email = authentication.getName();
-
-        Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
-
-        return customerMapper.toResponse(customer);
-
-    }
-
-    // get customer using id
+    // return one customer
     @Override
     public CustomerResponse getCustomerById(Long id) {
 
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+        Customer customer = findCustomer(id);
+
+        authorize(customer);
 
         return customerMapper.toResponse(customer);
 
     }
 
-    // return every customer
+    // update customer
     @Override
-    public List<CustomerResponse> getAllCustomers() {
-
-        return customerRepository.findAll()
-
-                .stream()
-
-                .map(customerMapper::toResponse)
-
-                .toList();
-
-    }
-
-    // update currently logged-in customer
-    @Override
-    public CustomerResponse updateCurrentCustomer(
+    public CustomerResponse updateCustomer(
+            Long id,
             UpdateCustomerRequest request) {
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+        Customer customer = findCustomer(id);
 
-        String email = authentication.getName();
+        authorize(customer);
 
-        Customer customer = customerRepository.findByEmail(email)
+        if (request.getFirstName() != null &&
+                !request.getFirstName().isBlank()) {
 
-                .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+            customer.setFirstName(request.getFirstName());
 
-        customer.setFirstName(request.getFirstName());
+        }
 
-        customer.setLastName(request.getLastName());
+        if (request.getLastName() != null &&
+                !request.getLastName().isBlank()) {
 
-        customer.setPhoneNumber(request.getPhoneNumber());
+            customer.setLastName(request.getLastName());
 
-        customer.setAddress(request.getAddress());
+        }
 
-        customer.setUpdatedAt(LocalDateTime.now());
+        if (request.getEmail() != null &&
+                !request.getEmail().isBlank() &&
+                !request.getEmail().equals(customer.getEmail())) {
+
+            if (customerRepository.existsByEmail(request.getEmail())) {
+                throw new RuntimeException("Email already exists");
+            }
+
+            customer.setEmail(request.getEmail());
+
+        }
+
+        if (request.getPhoneNumber() != null &&
+                !request.getPhoneNumber().isBlank()) {
+
+            customer.setPhoneNumber(request.getPhoneNumber());
+
+        }
+
+        if (request.getAddress() != null &&
+                !request.getAddress().isBlank()) {
+
+            customer.setAddress(request.getAddress());
+
+        }
 
         customerRepository.save(customer);
 
@@ -102,12 +96,38 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteCustomer(Long id) {
 
-        Customer customer = customerRepository.findById(id)
+        Customer customer = findCustomer(id);
+
+        authorize(customer);
+
+        customerRepository.delete(customer);
+
+    }
+
+    // find customer by id
+    private Customer findCustomer(Long id) {
+
+        return customerRepository.findById(id)
 
                 .orElseThrow(() ->
                         new RuntimeException("Customer not found"));
 
-        customerRepository.delete(customer);
+    }
+
+    // ensure logged-in customer owns this account
+    private void authorize(Customer customer) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        if (!customer.getEmail().equals(email)) {
+
+            throw new AccessDeniedException(
+                    "You are not authorized to access this customer");
+
+        }
 
     }
 

@@ -1,5 +1,6 @@
 package com.alexander.openbanking_api.dto.customer;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -12,19 +13,19 @@ import lombok.*;
 public class UpdateCustomerRequest {
 
     // customer's first name
-    @NotBlank(message = "First name is required")
     private String firstName;
 
     // customer's last name
-    @NotBlank(message = "Last name is required")
     private String lastName;
 
+    // customer's email
+    @Email(message = "Invalid email")
+    private String email;
+
     // customer's phone number
-    @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
     // customer's address
-    @NotBlank(message = "Address is required")
     private String address;
 
 }

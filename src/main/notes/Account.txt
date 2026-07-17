@@ -1,0 +1,72 @@
+Account.java
+
+Represents a customer's bank account.
+
+Fields
+
+id
+Primary key.
+
+accountNumber
+Unique account identifier.
+
+accountName
+Display name of the account.
+
+balance
+Money currently in the account.
+
+accountType
+Savings or Current.
+
+customer
+Owner of the account.
+
+createdAt
+Date the account was opened.
+
+
+AccountType
+
+Stores available account types.
+
+CURRENT
+
+SAVINGS
+
+
+Repository
+
+findByAccountNumber()
+
+Returns one account.
+
+existsByAccountNumber()
+
+Checks duplicate account numbers.
+
+findByCustomer()
+
+Returns every account owned by a customer.
+
+
+DTOs
+
+CreateAccountRequest
+
+Used when opening an account.
+
+UpdateAccountRequest
+
+Allows changing account name.
+
+AccountResponse
+
+Returned back to Swagger/Postman.
+
+
+Mapper
+
+Converts Account entity into AccountResponse.
+
+Never expose entities directly.

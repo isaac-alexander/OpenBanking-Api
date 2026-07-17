@@ -60,6 +60,11 @@ public class Customer implements UserDetails {
     // last update date
     private LocalDateTime updatedAt;
 
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.ALL)
+    private List<Account> accounts;
+
     // Spring Security Methods
 
     // returns the customer's role

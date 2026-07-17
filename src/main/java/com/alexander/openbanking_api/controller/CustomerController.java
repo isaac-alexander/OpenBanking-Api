@@ -7,25 +7,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/customers")
 public class CustomerController {
 
-    // inject service
     private final CustomerService customerService;
 
-    // return logged-in customer
-    @GetMapping("/me")
-    public CustomerResponse getCurrentCustomer() {
-
-        return customerService.getCurrentCustomer();
-
-    }
-
-    // return one customer
+    // get customer
     @GetMapping("/{id}")
     public CustomerResponse getCustomerById(
             @PathVariable Long id) {
@@ -34,32 +23,23 @@ public class CustomerController {
 
     }
 
-    // return all customers
-    @GetMapping
-    public List<CustomerResponse> getAllCustomers() {
-
-        return customerService.getAllCustomers();
-
-    }
-
-    // update logged-in customer
-    @PatchMapping
+    // update customer
+    @PatchMapping("/{id}")
     public CustomerResponse updateCustomer(
 
+            @PathVariable Long id,
+
             @Valid
-
             @RequestBody
-
             UpdateCustomerRequest request) {
 
-        return customerService.updateCurrentCustomer(request);
+        return customerService.updateCustomer(id, request);
 
     }
 
     // delete customer
     @DeleteMapping("/{id}")
     public void deleteCustomer(
-
             @PathVariable Long id) {
 
         customerService.deleteCustomer(id);
