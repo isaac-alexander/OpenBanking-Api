@@ -2,6 +2,7 @@ package com.alexander.openbanking_api.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.alexander.openbanking_api.entity.Currency;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +29,11 @@ public class Account {
     @Column(nullable = false)
     private String accountName;
 
+    // account currency
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Currency currency;
+
     // current balance
     @Column(nullable = false)
     private BigDecimal balance;
@@ -36,6 +42,11 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountType accountType;
+
+    // account status
+    @Enumerated(EnumType.STRING)
+    @Column(nullable =false)
+    private AccountStatus status;
 
     // owner of this account
     @ManyToOne(fetch = FetchType.LAZY)

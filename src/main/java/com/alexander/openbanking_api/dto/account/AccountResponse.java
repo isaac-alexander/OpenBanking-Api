@@ -1,6 +1,7 @@
 package com.alexander.openbanking_api.dto.account;
 
 import com.alexander.openbanking_api.entity.AccountType;
+import com.alexander.openbanking_api.entity.Currency;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,6 +22,8 @@ public class AccountResponse {
 
     // account display name
     private String accountName;
+
+    private Currency currency;
 
     // current balance
     private BigDecimal balance;

@@ -19,6 +19,8 @@ public class AccountMapper {
 
                 .accountName(account.getAccountName())
 
+                .currency(account.getCurrency())
+
                 .balance(account.getBalance())
 
                 .accountType(account.getAccountType())
