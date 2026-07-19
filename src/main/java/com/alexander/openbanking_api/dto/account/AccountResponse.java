@@ -1,5 +1,6 @@
 package com.alexander.openbanking_api.dto.account;
 
+import com.alexander.openbanking_api.entity.AccountStatus;
 import com.alexander.openbanking_api.entity.AccountType;
 import com.alexander.openbanking_api.entity.Currency;
 import lombok.*;
@@ -23,6 +24,7 @@ public class AccountResponse {
     // account display name
     private String accountName;
 
+    // account currency
     private Currency currency;
 
     // current balance
@@ -30,6 +32,9 @@ public class AccountResponse {
 
     // account type
     private AccountType accountType;
+
+    // current account status
+    private AccountStatus status;
 
     // owner id
     private Long customerId;

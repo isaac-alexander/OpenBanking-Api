@@ -1,0 +1,78 @@
+AccountServiceImpl
+
+Implements all business logic related to bank accounts.
+
+@Service
+Marks this class as a Spring Service. It contains business logic.
+
+@RequiredArgsConstructor
+Lombok automatically creates a constructor and injects all final fields.
+
+AccountRepository
+Performs CRUD operations on accounts.
+
+CustomerRepository
+Retrieves customers and verifies ownership.
+
+AccountMapper
+Converts Account entities into AccountResponse DTOs.
+
+Methods
+
+createAccount()
+
+Creates a new bank account for an authenticated customer.
+
+Steps:
+1. Verify the customer exists.
+2. Verify the logged-in user owns the customer record.
+3. Generate a unique account number.
+4. Set the account name.
+5. Set the account type.
+6. Set the opening balance to ₦0.
+7. Set the currency to NGN.
+8. Set the account status to ACTIVE.
+9. Save the account.
+10. Return the created account.
+
+getCustomerAccounts()
+
+Returns every account that belongs to the authenticated customer.
+
+Steps:
+1. Verify ownership.
+2. Retrieve all customer accounts.
+3. Convert each Account into AccountResponse.
+4. Return the list.
+
+getAccountById()
+
+Returns one account.
+
+Steps:
+1. Verify customer exists.
+2. Verify logged-in customer owns the account.
+3. Return the account.
+
+getAuthorizedCustomer()
+
+Security helper method.
+
+1. Find customer by ID.
+2. Read the logged-in email from Spring Security.
+3. Compare database email with JWT email.
+4. Throw AccessDeniedException if they do not match.
+
+generateAccountNumber()
+
+Creates a unique account number.
+Starts with 00
+Generates 8 random digits
+Generates another number if a duplicate already exists
+
+
+Every customer may own multiple accounts.
+Every account belongs to one customer.
+New accounts always start with ₦0.
+Newly created accounts are ACTIVE.
+Customers cannot access another customer's accounts.

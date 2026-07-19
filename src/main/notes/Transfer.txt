@@ -1,0 +1,31 @@
+Transfer.java Notes
+
+Stores every transfer performed.
+
+
+id
+Unique transfer id.
+
+sourceAccount
+Account sending money.
+
+destinationAccount
+Account receiving money.
+
+amount
+Amount transferred.
+
+narration
+Description supplied by customer.
+
+status
+SUCCESS or FAILED.
+
+createdAt
+Time transfer occurred.
+
+Many Transfers - One Account
+
+One Account can send many transfers.
+
+One Account can receive many transfers.

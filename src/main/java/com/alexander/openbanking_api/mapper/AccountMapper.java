@@ -25,6 +25,8 @@ public class AccountMapper {
 
                 .accountType(account.getAccountType())
 
+                .status(account.getStatus())
+
                 .customerId(account.getCustomer().getId())
 
                 .build();
