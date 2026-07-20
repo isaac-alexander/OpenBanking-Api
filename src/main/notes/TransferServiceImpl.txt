@@ -1,0 +1,75 @@
+TransferServiceImpl Notes
+
+Contains the transfer business logic.
+
+@Transactional ... Spring says, Either everything succeeds or nothing succeeds.
+So if one save fails
+Debit fails - Credit fails - Transfer fails
+then Everything rolls back automatically.
+
+Flow
+
+1. Verify logged-in customer.
+
+2. Find source account.
+
+3. Find destination account.
+
+4. Verify customer owns source account.
+
+5. Prevent transferring to the same account.
+
+6. Check sufficient balance.
+
+7. Debit sender account.
+
+8. Credit destination account.
+
+9. Save both updated accounts.
+
+10. Save the transfer record.
+
+11. Return a TransferResponse.
+
+Security
+
+Customers can only transfer money from their own accounts.
+
+They cannot debit another customer's account.
+
+Money Movement
+
+Sender Balance
+Old Balance - Amount
+
+Receiver Balance
+Old Balance + Amount
+
+If balance is insufficient, the transfer is rejected.
+
+
+
+________________________________________________________________________
+stream()
+
+Streams allow processing collections without writing loops.
+
+flatMap() - Each account has its own list of transfers.
+
+flatMap joins all those transfer lists into one single list.
+
+Without flatMap you would get
+
+List<List<Transfer>>
+
+With flatMap you get
+
+List<Transfer>
+
+map()
+
+Converts every Transfer entity into TransferResponse.
+
+toList()
+
+Converts the Stream back into a normal Java List.

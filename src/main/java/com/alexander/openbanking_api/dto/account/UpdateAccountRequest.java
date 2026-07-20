@@ -1,8 +1,9 @@
 package com.alexander.openbanking_api.dto.account;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-// request body used for updating an account
+// request body for updating an account
 @Getter
 @Setter
 @NoArgsConstructor
@@ -10,7 +11,8 @@ import lombok.*;
 @Builder
 public class UpdateAccountRequest {
 
-    // new display name
+    // new account display name
+    @NotBlank(message = "Account name is required")
     private String accountName;
 
 }

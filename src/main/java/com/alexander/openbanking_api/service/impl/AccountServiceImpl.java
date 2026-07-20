@@ -49,7 +49,8 @@ public class AccountServiceImpl implements AccountService {
 
                 .accountType(request.getAccountType())
 
-                .balance(BigDecimal.ZERO)
+                // every new account gets a balance of 1000
+                .balance(BigDecimal.valueOf(1000))
 
                 .currency(Currency.NGN)
 
