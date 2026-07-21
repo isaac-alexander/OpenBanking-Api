@@ -53,8 +53,7 @@ public class TransferServiceImpl
                 .findByAccountNumber(
                         request.getDestinationAccountNumber())
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Destination account not found"));
+                        new RuntimeException("Destination account not found"));
 
         // ensure customer owns source account
         if (!sourceAccount.getCustomer().getId()
