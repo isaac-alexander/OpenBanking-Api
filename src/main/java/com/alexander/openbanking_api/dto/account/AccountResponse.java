@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class AccountResponse {
 
     // account id
-    private Long id;
+    private Long accountId;
 
     // generated account number
     private String accountNumber;

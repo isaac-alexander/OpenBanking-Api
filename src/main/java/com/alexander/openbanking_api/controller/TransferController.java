@@ -19,10 +19,12 @@ public class TransferController {
     private final TransferService transferService;
 
     // perform transfer
-    @PostMapping
+    @PostMapping("/accounts/{accountId}/transfers")
     public TransferResponse transfer(
 
             @PathVariable Long customerId,
+
+            @PathVariable Long accountId,
 
             @Valid
 
@@ -31,7 +33,11 @@ public class TransferController {
             CreateTransferRequest request) {
 
         return transferService.transfer(
+
                 customerId,
+
+                accountId,
+
                 request);
 
     }

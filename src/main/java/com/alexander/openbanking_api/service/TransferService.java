@@ -8,7 +8,7 @@ import java.util.List;
 public interface TransferService {
 
     // perform transfer
-    TransferResponse transfer(Long customerId, CreateTransferRequest request);
+    TransferResponse transfer(Long customerId, Long accountId,CreateTransferRequest request);
 
     // transfer history
     List<TransferResponse> getTransfers(Long customerId);

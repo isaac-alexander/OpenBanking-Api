@@ -15,10 +15,6 @@ import java.math.BigDecimal;
 @Builder
 public class CreateTransferRequest {
 
-    // sender account number
-    @NotBlank(message = "Source account number is required")
-    private String sourceAccountNumber;
-
     // destination account number
     @NotBlank(message = "Destination account number is required")
     private String destinationAccountNumber;
@@ -29,6 +25,7 @@ public class CreateTransferRequest {
     private BigDecimal amount;
 
     // transfer narration
+    @NotBlank(message = "Narration is required")
     private String narration;
 
 }

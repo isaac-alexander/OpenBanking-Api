@@ -23,79 +23,81 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TransferServiceImpl
-        implements TransferService {
+public class TransferServiceImpl implements TransferService {
 
+    // transfer repository
     private final TransferRepository transferRepository;
 
+    // account repository
     private final AccountRepository accountRepository;
 
+    // customer repository
     private final CustomerRepository customerRepository;
 
+    // mapper
     private final TransferMapper transferMapper;
 
+    // transfer money
     @Override
     @Transactional
     public TransferResponse transfer(
             Long customerId,
+            Long accountId,
             CreateTransferRequest request) {
 
+        // verify logged in customer
         Customer customer = getAuthorizedCustomer(customerId);
 
-        Account sourceAccount = accountRepository
-                .findByAccountNumber(
-                        request.getSourceAccountNumber())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Source account not found"));
+        // get sender account
+        Account sourceAccount = getAuthorizedAccount(customerId, accountId);
 
+        // find receiver account
         Account destinationAccount = accountRepository
+
                 .findByAccountNumber(
                         request.getDestinationAccountNumber())
+
                 .orElseThrow(() ->
-                        new RuntimeException("Destination account not found"));
+                        new RuntimeException(
+                                "Destination account not found"));
 
-        // ensure customer owns source account
-        if (!sourceAccount.getCustomer().getId()
-                .equals(customer.getId())) {
-
-            throw new AccessDeniedException(
-                    "You cannot transfer from this account");
-
-        }
-
-        // cannot transfer to same account
+        // customer cannot transfer to same account
         if (sourceAccount.getId()
                 .equals(destinationAccount.getId())) {
 
             throw new RuntimeException(
                     "Cannot transfer to same account");
-
         }
 
-        // sufficient balance check
+        // ensure enough balance exists
         if (sourceAccount.getBalance()
                 .compareTo(request.getAmount()) < 0) {
 
             throw new RuntimeException(
                     "Insufficient balance");
-
         }
 
-        // debit sender
+        // remove money from sender
         sourceAccount.setBalance(
+
                 sourceAccount.getBalance()
+
                         .subtract(request.getAmount()));
 
-        // credit receiver
+        // add money to receiver
         destinationAccount.setBalance(
+
                 destinationAccount.getBalance()
+
                         .add(request.getAmount()));
 
+        // save sender
         accountRepository.save(sourceAccount);
 
+        // save receiver
         accountRepository.save(destinationAccount);
 
+        // save transfer history
         Transfer transfer = Transfer.builder()
 
                 .sourceAccount(sourceAccount)
@@ -114,59 +116,94 @@ public class TransferServiceImpl
 
         transferRepository.save(transfer);
 
+        // return response
         return transferMapper.toResponse(transfer);
 
     }
 
+    // return every transfer made by the logged-in customer
     @Override
-    public List<TransferResponse> getTransfers(
-            Long customerId) {
+    public List<TransferResponse> getTransfers(Long customerId) {
 
+        // verify customer is logged in
         Customer customer = getAuthorizedCustomer(customerId);
 
-        // find every account that belongs to the logged-in customer
+        // find every account owned by this customer
         return accountRepository.findByCustomer(customer)
 
-                // convert the list of accounts into a stream
-                // streams let us process collections one item at a time
+                // convert list of accounts into a stream
                 .stream()
 
-                // for each account, find every transfer made from that account
-                // each account returns its own list of transfers
-                // flatMap combines all those lists into one big stream
+                // get transfers from every account
                 .flatMap(account ->
 
                         transferRepository
 
-                                // get transfers sent from this account
                                 .findBySourceAccount(account)
 
-                                // convert transfer list into a stream
                                 .stream())
 
-                // convert every Transfer entity into TransferResponse DTO
+                // convert entity to response dto
                 .map(transferMapper::toResponse)
 
-                // convert the stream back into a List
+                // convert stream back into list
                 .toList();
 
     }
 
-    // verify authenticated customer
-    private Customer getAuthorizedCustomer(Long customerId) {
+    // return an account after verifying ownership
+    private Account getAuthorizedAccount(
+            Long customerId,
+            Long accountId) {
 
+        // verify logged-in customer
+        Customer customer = getAuthorizedCustomer(customerId);
+
+        // find account
+        Account account = accountRepository.findById(accountId)
+
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Account not found"));
+
+        // ensure account belongs to customer
+        if (!account.getCustomer()
+
+                .getId()
+
+                .equals(customer.getId())) {
+
+            throw new AccessDeniedException(
+                    "Unauthorized access");
+
+        }
+
+        return account;
+
+    }
+
+    // verify logged-in customer
+    private Customer getAuthorizedCustomer(
+            Long customerId) {
+
+        // find customer
         Customer customer = customerRepository.findById(customerId)
 
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+                        new RuntimeException(
+                                "Customer not found"));
 
+        // get authenticated user
         Authentication authentication =
                 SecurityContextHolder.getContext()
                         .getAuthentication();
 
-        if (!customer.getEmail().equals(authentication.getName())) {
+        // compare emails
+        if (!customer.getEmail()
+                .equals(authentication.getName())) {
 
-            throw new AccessDeniedException("Unauthorized access");
+            throw new AccessDeniedException(
+                    "Unauthorized access");
 
         }
 

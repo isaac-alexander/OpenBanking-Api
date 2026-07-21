@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         // save customer
-        customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
 
         // generate jwt token
         String token = jwtService.generateToken(customer);
@@ -74,9 +74,14 @@ public class AuthServiceImpl implements AuthService {
         // return authentication response
         return AuthResponse.builder()
 
+                // generated jwt
                 .token(token)
 
-                .type("Bearer")
+                // logged in customer id
+                .customerId(savedCustomer.getId())
+
+                // customer email
+                .email(customer.getEmail())
 
                 .build();
 
@@ -108,9 +113,14 @@ public class AuthServiceImpl implements AuthService {
 
         return AuthResponse.builder()
 
+                // generated jwt
                 .token(token)
 
-                .type("Bearer")
+                // logged in customer id
+                .customerId(customer.getId())
+
+                // customer email
+                .email(customer.getEmail())
 
                 .build();
 

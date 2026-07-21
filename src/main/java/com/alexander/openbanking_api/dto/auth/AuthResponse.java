@@ -2,7 +2,7 @@ package com.alexander.openbanking_api.dto.auth;
 
 import lombok.*;
 
-// response returned after successful login
+// response returned after successful authentication
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +13,10 @@ public class AuthResponse {
     // jwt token
     private String token;
 
-    // token type
-    private String type;
+    // authenticated customer id
+    private Long customerId;
+
+    // customer email
+    private String email;
 
 }
