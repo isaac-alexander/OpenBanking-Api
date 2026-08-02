@@ -5,6 +5,7 @@ import com.alexander.openbanking_api.dto.auth.LoginRequest;
 import com.alexander.openbanking_api.dto.auth.RegisterCustomerRequest;
 import com.alexander.openbanking_api.entity.Customer;
 import com.alexander.openbanking_api.entity.Role;
+import com.alexander.openbanking_api.exception.BadRequestException;
 import com.alexander.openbanking_api.repository.CustomerRepository;
 import com.alexander.openbanking_api.security.JwtService;
 import com.alexander.openbanking_api.service.AuthService;
@@ -38,8 +39,8 @@ public class AuthServiceImpl implements AuthService {
         // check if email already exists
         if (customerRepository.existsByEmail(request.getEmail())) {
 
-            throw new RuntimeException("Email already exists");
-
+            // prevent duplicate customer registration
+            throw new BadRequestException("Email already exists");
         }
 
         // create customer object
@@ -106,8 +107,9 @@ public class AuthServiceImpl implements AuthService {
         // find customer
         Customer customer = customerRepository.findByEmail(request.getEmail())
 
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
+                // customer should exist after successful authentication
+                .orElseThrow(() -> new BadRequestException(
+                                "Customer not found"));
         // generate token
         String token = jwtService.generateToken(customer);
 

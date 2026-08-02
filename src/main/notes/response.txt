@@ -1,0 +1,47 @@
+Why use Generic <T> in ApiResponse.java
+
+Instead of writing
+
+CustomerResponse
+
+AccountResponse
+
+TransferResponse
+
+LoginResponse
+
+we only write one wrapper
+
+Example
+
+ApiResponse<CustomerResponse>
+
+ApiResponse<AccountResponse>
+
+ApiResponse<List<AccountResponse>>
+
+ApiResponse<TransferResponse>
+
+
+Why create ApiResponseBuilder
+
+Without it every controller would have to write
+
+return ApiResponse.builder()
+
+        .status("success")
+
+        .message("Customer created")
+
+        .data(customer)
+
+        .build();
+
+over and over
+
+Instead we'll simply write
+return responseBuilder.success(
+
+        "Customer created successfully",
+
+        customerResponse);

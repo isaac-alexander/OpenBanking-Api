@@ -11,6 +11,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.alexander.openbanking_api.exception.BadRequestException;
+import com.alexander.openbanking_api.exception.ResourceNotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -65,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
                 !request.getEmail().equals(customer.getEmail())) {
 
             if (customerRepository.existsByEmail(request.getEmail())) {
-                throw new RuntimeException("Email already exists");
+                throw new BadRequestException("Email already exists");
             }
 
             customer.setEmail(request.getEmail());
@@ -110,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findById(id)
 
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+                        new ResourceNotFoundException("Customer not found"));
 
     }
 

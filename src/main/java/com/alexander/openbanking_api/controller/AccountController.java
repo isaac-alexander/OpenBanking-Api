@@ -3,101 +3,134 @@ package com.alexander.openbanking_api.controller;
 import com.alexander.openbanking_api.dto.account.AccountResponse;
 import com.alexander.openbanking_api.dto.account.CreateAccountRequest;
 import com.alexander.openbanking_api.dto.account.UpdateAccountRequest;
+import com.alexander.openbanking_api.dto.response.ApiResponse;
+import com.alexander.openbanking_api.dto.response.ApiResponseBuilder;
 import com.alexander.openbanking_api.dto.transfer.TransferResponse;
 import com.alexander.openbanking_api.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-// handles account endpoints
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/customers/{customerId}/accounts")
 public class AccountController {
 
-    // inject account service
+    // account service
     private final AccountService accountService;
 
-    // create a new account for a customer
+    // response wrapper builder
+    private final ApiResponseBuilder responseBuilder;
+
+    // open account
     @PostMapping
-    public AccountResponse createAccount(
+    public ResponseEntity<ApiResponse<AccountResponse>> createAccount(
 
             @PathVariable Long customerId,
-
             @Valid
-
             @RequestBody
-
             CreateAccountRequest request) {
 
-        return accountService.createAccount(customerId, request);
+        AccountResponse response = accountService.createAccount(
+                customerId, request);
 
+        return ResponseEntity.status(HttpStatus.CREATED)
+
+                .body(
+                        responseBuilder.success(
+                                "Account created successfully",
+                                response)
+                );
     }
 
-    // return every account owned by a customer
+    // get all accounts
     @GetMapping
-    public List<AccountResponse> getCustomerAccounts(
-
+    public ResponseEntity<ApiResponse<List<AccountResponse>>> getCustomerAccounts(
             @PathVariable Long customerId) {
 
-        return accountService.getCustomerAccounts(customerId);
+        List<AccountResponse> response = accountService.getCustomerAccounts(customerId);
+
+        return ResponseEntity.ok(
+                responseBuilder.success(
+                        "Accounts retrieved successfully",
+                        response)
+        );
 
     }
 
-    // return one account
+    // get one account
     @GetMapping("/{accountId}")
-    public AccountResponse getAccountById(
-
+    public ResponseEntity<ApiResponse<AccountResponse>> getAccountById(
             @PathVariable Long customerId,
-
             @PathVariable Long accountId) {
 
-        return accountService.getAccountById(customerId, accountId);
+        AccountResponse response = accountService.getAccountById(
+                customerId, accountId);
+
+        return ResponseEntity.ok(
+                responseBuilder.success(
+                        "Account retrieved successfully",
+                        response)
+        );
 
     }
 
-    // get account balance
+    // get balance
     @GetMapping("/{accountId}/balance")
-    public BigDecimal getBalance(
-
+    public ResponseEntity<ApiResponse<BigDecimal>> getBalance(
             @PathVariable Long customerId,
-
             @PathVariable Long accountId) {
 
-        return accountService.getAccountBalance(customerId, accountId);
+        BigDecimal response = accountService.getAccountBalance(
+                customerId, accountId);
 
+        return ResponseEntity.ok(
+                responseBuilder.success(
+                        "Balance retrieved successfully",
+                        response)
+        );
     }
 
     // update account
     @PatchMapping("/{accountId}")
-    public AccountResponse updateAccount(
+    public ResponseEntity<ApiResponse<AccountResponse>> updateAccount(
 
             @PathVariable Long customerId,
-
             @PathVariable Long accountId,
-
             @Valid
-
             @RequestBody
-
             UpdateAccountRequest request) {
 
-        return accountService.updateAccount(customerId, accountId, request);
+        AccountResponse response = accountService.updateAccount(
+                customerId, accountId, request);
 
+        return ResponseEntity.ok(
+                responseBuilder.success(
+                        "Account updated successfully",
+                        response)
+        );
     }
 
-    // return all transfers made by the account
+    // account transaction history
     @GetMapping("/{accountId}/transactions")
-    public List<TransferResponse> getTransactions(
-
+    public ResponseEntity<ApiResponse<List<TransferResponse>>> getTransactions(
             @PathVariable Long customerId,
-
             @PathVariable Long accountId) {
 
-        return accountService.getAccountTransactions(customerId, accountId);
+        List<TransferResponse> response = accountService.getAccountTransactions(
+                customerId, accountId);
 
+        return ResponseEntity.ok(
+                responseBuilder.success(
+                        "Transactions retrieved successfully",
+                        response
+                )
+        );
     }
+
 }

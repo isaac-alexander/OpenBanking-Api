@@ -7,6 +7,7 @@ import com.alexander.openbanking_api.entity.Account;
 import com.alexander.openbanking_api.entity.AccountStatus;
 import com.alexander.openbanking_api.entity.Currency;
 import com.alexander.openbanking_api.entity.Customer;
+import com.alexander.openbanking_api.exception.ResourceNotFoundException;
 import com.alexander.openbanking_api.mapper.AccountMapper;
 import com.alexander.openbanking_api.mapper.TransferMapper;
 import com.alexander.openbanking_api.repository.AccountRepository;
@@ -164,8 +165,9 @@ public class AccountServiceImpl implements AccountService {
 
         Customer customer = customerRepository.findById(customerId)
 
+                // customer id does not exist
                 .orElseThrow(() ->
-                        new RuntimeException("Customer not found"));
+                        new ResourceNotFoundException("Customer not found"));
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -190,7 +192,7 @@ public class AccountServiceImpl implements AccountService {
         // find the requested account
         Account account = accountRepository
                 .findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         // ensure the account belongs to
         // the authenticated customer

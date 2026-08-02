@@ -6,6 +6,8 @@ import com.alexander.openbanking_api.entity.Account;
 import com.alexander.openbanking_api.entity.Customer;
 import com.alexander.openbanking_api.entity.Transfer;
 import com.alexander.openbanking_api.entity.TransferStatus;
+import com.alexander.openbanking_api.exception.BadRequestException;
+import com.alexander.openbanking_api.exception.ResourceNotFoundException;
 import com.alexander.openbanking_api.mapper.TransferMapper;
 import com.alexander.openbanking_api.repository.AccountRepository;
 import com.alexander.openbanking_api.repository.CustomerRepository;
@@ -57,24 +59,24 @@ public class TransferServiceImpl implements TransferService {
                 .findByAccountNumber(
                         request.getDestinationAccountNumber())
 
+                // destination account number does not exist
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Destination account not found"));
+                        new ResourceNotFoundException("Destination account not found"));
 
         // customer cannot transfer to same account
         if (sourceAccount.getId()
                 .equals(destinationAccount.getId())) {
 
-            throw new RuntimeException(
-                    "Cannot transfer to same account");
+            // sender and receiver cannot be the same account
+            throw new BadRequestException("Cannot transfer to same account");
         }
 
         // ensure enough balance exists
         if (sourceAccount.getBalance()
                 .compareTo(request.getAmount()) < 0) {
 
-            throw new RuntimeException(
-                    "Insufficient balance");
+            // sender does not have enough money
+            throw new BadRequestException("Insufficient balance");
         }
 
         // remove money from sender
@@ -163,8 +165,7 @@ public class TransferServiceImpl implements TransferService {
         Account account = accountRepository.findById(accountId)
 
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Account not found"));
+                        new ResourceNotFoundException("Account not found"));
 
         // ensure account belongs to customer
         if (!account.getCustomer()
@@ -190,8 +191,7 @@ public class TransferServiceImpl implements TransferService {
         Customer customer = customerRepository.findById(customerId)
 
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Customer not found"));
+                        new ResourceNotFoundException("Customer not found"));
 
         // get authenticated user
         Authentication authentication =
