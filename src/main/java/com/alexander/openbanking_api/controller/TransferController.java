@@ -7,30 +7,33 @@ import com.alexander.openbanking_api.dto.transfer.TransferResponse;
 import com.alexander.openbanking_api.service.TransferService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.alexander.openbanking_api.dto.response.PageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 // handles transfer endpoints
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/customers/{customerId}")
+@RequestMapping("/api/customers/{customerId}/transfers")
 public class TransferController {
 
     // transfer service
     private final TransferService transferService;
 
-    // builds standard api responses
     private final ApiResponseBuilder responseBuilder;
 
-    // perform a transfer from one account
+    // perform transfer
     @PostMapping("/accounts/{accountId}/transfers")
-    public ResponseEntity<ApiResponse<TransferResponse>> transfer(
+    public ApiResponse<TransferResponse> transfer(
 
             @PathVariable Long customerId,
+
             @PathVariable Long accountId,
+
             @Valid
             @RequestBody
             CreateTransferRequest request) {
@@ -39,32 +42,36 @@ public class TransferController {
         TransferResponse response = transferService.transfer(
                 customerId, accountId, request);
 
-        // return wrapped response
-        return ResponseEntity.status(HttpStatus.CREATED)
+        //return wrapped response
+        return responseBuilder.success(
 
-                .body(
-                        responseBuilder.success(
-                                "Transfer completed successfully",
-                                response)
-                );
+                "Transfer completed successfully",
+                response);
     }
 
-    // return every transfer made by the customer
-    @GetMapping("/transfers")
-    public ResponseEntity<ApiResponse<List<TransferResponse>>> getTransfers(
+    // get transfer history
+    @GetMapping
+    public ApiResponse<PageResponse<TransferResponse>> getTransfers(
 
-            @PathVariable Long customerId) {
+            @PathVariable Long customerId,
 
-        // fetch transfers
-        List<TransferResponse> response =
-                transferService.getTransfers(customerId);
+            @RequestParam(defaultValue = "0")
+            int page,
 
-        // wrap response
-        return ResponseEntity.ok(
-                responseBuilder.success(
-                        "Transfers retrieved successfully",
-                        response)
-        );
+            @RequestParam(defaultValue = "10")
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<TransferResponse> transfers = transferService
+
+                .getTransfers(customerId, pageable);
+
+        return responseBuilder.successPage(
+
+                "Transfers retrieved successfully",
+
+                transfers);
 
     }
 

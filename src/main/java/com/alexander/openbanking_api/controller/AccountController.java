@@ -12,6 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.alexander.openbanking_api.dto.response.ApiResponse;
+import com.alexander.openbanking_api.dto.response.PageResponse;
+import com.alexander.openbanking_api.dto.response.ApiResponseBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,16 +56,24 @@ public class AccountController {
 
     // get all accounts
     @GetMapping
-    public ResponseEntity<ApiResponse<List<AccountResponse>>> getCustomerAccounts(
-            @PathVariable Long customerId) {
+    public ApiResponse<PageResponse<AccountResponse>> getCustomerAccounts(
+            @PathVariable Long customerId,
+            @RequestParam(defaultValue = "0")
+            int page,
+            @RequestParam(defaultValue = "10")
+            int size) {
 
-        List<AccountResponse> response = accountService.getCustomerAccounts(customerId);
+        Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(
-                responseBuilder.success(
-                        "Accounts retrieved successfully",
-                        response)
-        );
+        Page<AccountResponse> accounts = accountService
+
+                .getCustomerAccounts(customerId, pageable);
+
+        return responseBuilder.successPage(
+
+                "Accounts retrieved successfully",
+
+                accounts);
 
     }
 

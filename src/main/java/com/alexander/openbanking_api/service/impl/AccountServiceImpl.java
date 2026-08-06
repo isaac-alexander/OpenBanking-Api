@@ -15,6 +15,8 @@ import com.alexander.openbanking_api.repository.CustomerRepository;
 import com.alexander.openbanking_api.repository.TransferRepository;
 import com.alexander.openbanking_api.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -78,17 +80,26 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getCustomerAccounts(Long customerId) {
+    public Page<AccountResponse> getCustomerAccounts(
 
+            Long customerId,
+
+            Pageable pageable) {
+
+        // verify the logged-in customer
         Customer customer = getAuthorizedCustomer(customerId);
 
-        return accountRepository.findByCustomer(customer)
+        // retrieve one page of accounts
+        return accountRepository
 
-                .stream()
+                .findAccountsByCustomerId(
 
-                .map(accountMapper::toResponse)
+                        customer.getId(),
 
-                .toList();
+                        pageable)
+
+                // convert Account entity into AccountResponse
+                .map(accountMapper::toResponse);
 
     }
 

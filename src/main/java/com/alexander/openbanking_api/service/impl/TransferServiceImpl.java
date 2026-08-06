@@ -15,6 +15,8 @@ import com.alexander.openbanking_api.repository.TransferRepository;
 import com.alexander.openbanking_api.service.TransferService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -125,31 +127,26 @@ public class TransferServiceImpl implements TransferService {
 
     // return every transfer made by the logged-in customer
     @Override
-    public List<TransferResponse> getTransfers(Long customerId) {
+    public Page<TransferResponse> getTransfers(
 
-        // verify customer is logged in
+            Long customerId,
+
+            Pageable pageable) {
+
+        // verify logged-in customer
         Customer customer = getAuthorizedCustomer(customerId);
 
-        // find every account owned by this customer
-        return accountRepository.findByCustomer(customer)
+        // retrieve one page of transfers
+        return transferRepository
 
-                // convert list of accounts into a stream
-                .stream()
+                .findTransfersByCustomerId(
 
-                // get transfers from every account
-                .flatMap(account ->
+                        customer.getId(),
 
-                        transferRepository
+                        pageable)
 
-                                .findBySourceAccount(account)
-
-                                .stream())
-
-                // convert entity to response dto
-                .map(transferMapper::toResponse)
-
-                // convert stream back into list
-                .toList();
+                // convert entity into response dto
+                .map(transferMapper::toResponse);
 
     }
 

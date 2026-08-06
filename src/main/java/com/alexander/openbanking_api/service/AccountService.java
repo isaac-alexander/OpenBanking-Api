@@ -4,6 +4,8 @@ import com.alexander.openbanking_api.dto.account.AccountResponse;
 import com.alexander.openbanking_api.dto.account.CreateAccountRequest;
 import com.alexander.openbanking_api.dto.account.UpdateAccountRequest;
 import com.alexander.openbanking_api.dto.transfer.TransferResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,7 +16,7 @@ public interface AccountService {
     AccountResponse createAccount(Long customerId, CreateAccountRequest request);
 
     // return every account owned by customer
-    List<AccountResponse> getCustomerAccounts(Long customerId);
+    Page<AccountResponse> getCustomerAccounts(Long customerId, Pageable pageable);
 
     // return one account
     AccountResponse getAccountById(Long customerId, Long accountId);

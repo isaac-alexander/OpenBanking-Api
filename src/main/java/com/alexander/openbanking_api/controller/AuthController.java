@@ -8,8 +8,6 @@ import com.alexander.openbanking_api.dto.response.ApiResponseBuilder;
 import com.alexander.openbanking_api.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,41 +18,32 @@ public class AuthController {
     // authentication service
     private final AuthService authService;
 
-    // response wrapper builder
+    // api response builder
     private final ApiResponseBuilder responseBuilder;
 
     // register customer
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<AuthResponse>> register(
+    public ApiResponse<AuthResponse> register(
             @Valid
             @RequestBody
             RegisterCustomerRequest request) {
 
         AuthResponse response = authService.register(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        responseBuilder.success(
-                                "Customer registered successfully",
-                                response
-                        )
-                );
+        return responseBuilder.success(
+                "Customer registered successfully", response);
     }
 
     // login customer
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(
+    public ApiResponse<AuthResponse> login(
             @Valid
             @RequestBody
             LoginRequest request) {
 
         AuthResponse response = authService.login(request);
 
-        return ResponseEntity.ok(
-                responseBuilder.success(
-                        "Login successful",
-                        response)
-        );
+        return responseBuilder.success("Login successful", response);
     }
 
 }
